@@ -1,3 +1,4 @@
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Q78Fi597)
 # Difference-in-Differences with Staggered Adoption
 
 This assignment asks you to reproduce the core multi-period difference-in-differences ideas from the lecture source in one reproducible Python pipeline.
