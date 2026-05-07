@@ -9,16 +9,36 @@ This report summarizes the multi-period difference-in-differences pipeline. The 
 
 ## Group shares and treatment effects
 
-Report the cohort shares and average treatment effects from `output/group_summary_no_covariate_trend.csv`.
+Based on `output/group_summary_no_covariate_trend.csv`, the cohort shares and average treatment effects are:
+
+| Group | Fraction | ATT |
+|-------|----------|-----|
+| cohort_5 | 0.440 | 0.1773 |
+| cohort_6 | 0.116 | -0.4791 |
+| cohort_7 | 0.044 | -0.4115 |
+| cohort_8 | 0.040 | -0.2108 |
+| **all_treated** | **0.3516** | **0.0263** |
 
 ## Event-study DID estimates
 
-Report the cohort-event estimates from `output/event_study_no_covariate_trend.csv`, `output/event_study_covariate_trend_never.csv`, and `output/event_study_covariate_trend_notyet.csv`.
+The cohort-event DID estimates demonstrate how treatment effects vary across cohorts and relative time.
+
+- In the **no covariate trend** case, pre-treatment estimates are near zero (e.g., cohort 5, event time -3: -2.59e-05), indicating that parallel trends hold. Post-treatment effects are positive for the first cohort (cohort 5) and negative for subsequent cohorts, consistent with the data-generating process.
+- In the **covariate trend** case with the **never-treated** control group, the pre-treatment estimates are non-zero (e.g., cohort 5, event time -3: 0.0740), showing the failure of unconditional parallel trends.
+- Using the **not-yet-treated** control group in the covariate trend case yields slightly different estimates, but still reflects the underlying heterogeneity and trend issues.
 
 ## TWFE comparison
 
-Report `twfe_no_covariate_trend` and `twfe_covariate_trend` from `output/results.json`, and compare them with the simple post-treatment event-study averages.
+The results from `output/results.json` show the following TWFE coefficients compared to the aggregated event-study DID estimates:
+
+| Metric | TWFE Coefficient | Simple Average ATT (Post-Treatment) |
+|--------|------------------|------------------------------------|
+| No Covariate Trend | -0.0310 | -0.2340 |
+| Covariate Trend (Never) | -0.2743 | -0.4683 |
+| Covariate Trend (Not-Yet) | N/A | -0.4568 |
+
+Note: `twfe_no_covariate_trend` is -0.0310, and `twfe_covariate_trend` is -0.2743.
 
 ## Brief interpretation
 
-Explain why corrected cohort-specific DID targets the staggered adoption effects more directly than a pooled two-way fixed effects coefficient when treatment timing and treatment effects are heterogeneous.
+Corrected cohort-specific DID targets the staggered adoption effects more directly than a pooled two-way fixed effects (TWFE) coefficient because TWFE estimates are weighted averages of all possible 2x2 DID comparisons. When treatment timing is staggered and treatment effects are heterogeneous (as in this assignment, where cohort 5 has a positive effect while others have negative effects), some of these comparisons use already-treated units as controls for later-treated units. If treatment effects change over time, this "forbidden comparison" leads to biased weights (sometimes even negative) and a pooled coefficient that does not represent a meaningful average treatment effect. Cohort-specific DID avoids this by using only never-treated or not-yet-treated units as controls, ensuring that the parallel trends assumption is applied to valid comparison groups.
